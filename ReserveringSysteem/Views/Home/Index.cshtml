@@ -1,0 +1,28 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            @foreach (var time in Model)
+            {
+                <th>@time</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 1; i <= 10; ++i)
+        {
+            <tr>
+                <td colspan="1">Tafel @i</td>
+                @for (var j = 0; j < Model.Count; ++j)
+                {
+                    <td class="no-events" colspan="1"></td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
