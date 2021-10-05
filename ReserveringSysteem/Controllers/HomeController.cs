@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ReserveringSysteem.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -17,22 +18,16 @@ namespace ReserveringSysteem.Controllers
 
         public IActionResult Index()
         {
-            var timeList = new List<string>
+            var timeList = new List<string>();
+
+            var openingsTijd = new TimeSpan(17, 00, 00);
+            var sluitingsTijd = new TimeSpan(23, 00, 00);
+
+            while (openingsTijd <= sluitingsTijd)
             {
-                "08:00",
-                "08:30",
-                "09:00",
-                "09:30",
-                "10:00",
-                "10:30",
-                "11:00",
-                "11:30",
-                "12:00",
-                "12:30",
-                "13:00",
-                "13:30",
-                "14:00"
-            };
+                timeList.Add($"{openingsTijd.Hours}:{openingsTijd.Minutes:00}");
+                openingsTijd += new TimeSpan(00, 30, 00);
+            }
 
             return View(timeList);
         }

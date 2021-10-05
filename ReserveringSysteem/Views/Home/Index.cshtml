@@ -3,41 +3,43 @@
     ViewData["Title"] = "Home Page";
 }
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>&nbsp;</th>
-            @foreach (var time in Model)
-            {
-                <th class="event-header">@time</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @for (var i = 1; i <= 1; ++i)
-        {
+<div class="scroll-view">
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td colspan="1">Tafel @i</td>
-
-                <td class="td-event" colspan="1"></td>
-                <td class="td-event" colspan="1"><div class="event event-start event-start-half"></div></td>
-                <td class="td-event" colspan="1"><div class="event"></div></td>
-                <td class="td-event" colspan="1"><div class="event event-end event-end-half"></div></td>
-                <td class="td-event" colspan="1"></td>
-                <td class="td-event" colspan="1"></td>
-                <td class="td-event" colspan="1"></td>
-                <td class="td-event" colspan="1"><div class="event event-start"></div></td>
-                <td class="td-event" colspan="1"><div class="event"></div></td>
-                <td class="td-event" colspan="1"><div class="event event-end"></div></td>
-                <td class="td-event" colspan="1"></td>
-                <td class="td-event" colspan="1"></td>
-                <td class="td-event" colspan="1"></td>
-
-                @*@for (var j = 0; j < Model.Count; ++j)
+                <th>&nbsp;</th>
+                @foreach (var time in Model)
                 {
-                    <td class="no-events" colspan="1"></td>
-                }*@
+                    <th class="event-header">@time</th>
+                }
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (var i = 1; i <= 1; ++i)
+            {
+                <tr>
+                    <td colspan="1">Tafel @i</td>
+
+                    <td class="td-event" colspan="1"></td>
+                    <td class="td-event" colspan="1"><div class="event event-start event-start-half"></div></td>
+                    <td class="td-event" colspan="1"><div class="event"></div></td>
+                    <td class="td-event" colspan="1"><div class="event event-end event-end-half"></div></td>
+                    <td class="td-event" colspan="1"></td>
+                    <td class="td-event" colspan="1"></td>
+                    <td class="td-event" colspan="1"></td>
+                    <td class="td-event" colspan="1"><div class="event event-start"></div></td>
+                    <td class="td-event" colspan="1"><div class="event"></div></td>
+                    <td class="td-event" colspan="1"><div class="event event-end"></div></td>
+                    <td class="td-event" colspan="1"></td>
+                    <td class="td-event" colspan="1"></td>
+                    <td class="td-event" colspan="1"></td>
+
+                    @*@for (var j = 0; j < Model.Count; ++j)
+                    {
+                        <td class="no-events" colspan="1"></td>
+                    }*@
+                </tr>
+            }
+        </tbody>
+    </table>
+ </div>
