@@ -70,6 +70,39 @@ body {
   line-height: 60px; /* Vertically center the text there */
 }
 
-.hoer {
+/* Event styles 
+------------------------------------------------- */
+.event {
     width: 100%;
+    height: 20px;
+    background-color: red;
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+.event-start {
+    border-top-left-radius: 7.5px;
+    border-bottom-left-radius: 7.5px;
+}
+
+.event-start-half, .event-end-half {
+    width: 50%;
+}
+
+.event-start-half {
+    float: right;
+}
+
+.event-end {
+    border-top-right-radius: 7.5px;
+    border-bottom-right-radius: 7.5px;
+}
+
+.td-event {
+    padding: 0 !important;
+    border-left: 1px solid black;
+}
+
+.event-header {
+    text-align: center;
 }
