@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReserveringSysteem.Database;
 
-namespace ReserveringSysteem.Database.Migrations
+namespace ReserveringSysteem.Migrations
 {
     [DbContext(typeof(ReserveringContext))]
-    [Migration("20210930101955_InitialCreate")]
-    partial class InitialCreate
+    partial class ReserveringContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,24 +42,28 @@ namespace ReserveringSysteem.Database.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int?>("ReserveringID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID")
                         .HasName("PK_Bedrijven");
+
+                    b.HasIndex("ReserveringID");
 
                     b.ToTable("bedrijven");
                 });
 
             modelBuilder.Entity("ReserveringSysteem.Database.Models.ReserveringsModel", b =>
                 {
-                    b.Property<int>("ID")
-                        .HasColumnType("int");
-
                     b.Property<int>("ReserveringID")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AantalPersonen")
                         .HasColumnType("int");
 
-                    b.Property<int>("BedrijfID")
+                    b.Property<int>("ID")
                         .HasColumnType("int");
 
                     b.Property<string>("NaamReserverende")
@@ -80,11 +82,10 @@ namespace ReserveringSysteem.Database.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.HasKey("ID", "ReserveringID")
+                    b.HasKey("ReserveringID")
                         .HasName("PK_Reserveringen");
 
-                    b.HasIndex("BedrijfID")
-                        .IsUnique();
+                    b.HasIndex("ID");
 
                     b.ToTable("reserveringen");
                 });
@@ -118,15 +119,17 @@ namespace ReserveringSysteem.Database.Migrations
                     b.ToTable("vestigingen");
                 });
 
+            modelBuilder.Entity("ReserveringSysteem.Database.Models.BedrijfsModel", b =>
+                {
+                    b.HasOne("ReserveringSysteem.Database.Models.ReserveringsModel", "Reservering")
+                        .WithMany()
+                        .HasForeignKey("ReserveringID");
+
+                    b.Navigation("Reservering");
+                });
+
             modelBuilder.Entity("ReserveringSysteem.Database.Models.ReserveringsModel", b =>
                 {
-                    b.HasOne("ReserveringSysteem.Database.Models.BedrijfsModel", "Bedrijf")
-                        .WithOne("Reservering")
-                        .HasForeignKey("ReserveringSysteem.Database.Models.ReserveringsModel", "BedrijfID")
-                        .HasConstraintName("FK__reservering_bedrijf_id__bedrijf_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ReserveringSysteem.Database.Models.VestigingsModel", "Vestiging")
                         .WithMany("Reservering")
                         .HasForeignKey("ID")
@@ -134,14 +137,7 @@ namespace ReserveringSysteem.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Bedrijf");
-
                     b.Navigation("Vestiging");
-                });
-
-            modelBuilder.Entity("ReserveringSysteem.Database.Models.BedrijfsModel", b =>
-                {
-                    b.Navigation("Reservering");
                 });
 
             modelBuilder.Entity("ReserveringSysteem.Database.Models.VestigingsModel", b =>

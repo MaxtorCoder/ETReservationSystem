@@ -1,21 +1,24 @@
-﻿@model List<ReserveringModel>
+﻿@model ReserveringSysteem.Models.SelectVestigingModel
 @{
     ViewData["Title"] = "Home Page";
+
+    var vestigingList = (List<ReserveringSysteem.Database.Models.VestigingsModel>)ViewData["VestigingList"];
 }
 
-<div class="container">
-    @if (Model.Count == 0) {
-        <p>Nog geen Vestigingen!</p>
-        <a asp-controller="Reservering" asp-action="Index">Vestiging Toevoegen</a>
-    } else {
-        <form asp-action="">
-            <label for="vestiging">Kies Vestiging:</label>
-            <select id="vestiging" name="vestigingList">
-                @foreach (var vestiging in Model)
-                {
-                    <option value="vestiging.ID">@vestiging.Naam</option>
-                }
-            </select>
+<div class="d-flex justify-content-center">
+    <div>
+        <h4>Vestigingen:</h4>
+        <hr />
+
+        <form asp-action="SelectVestiging" method="POST">
+            <div class="form-group">
+                <label for="vestiging">Kies Vestiging:</label>
+                <select class="form-control" id="vestiging" asp-for="ID" asp-items="@(new SelectList(vestigingList, "ID", "Naam"))">
+                    <option value="0">...</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-roze">Selecteer Vestiging</button>
+            <a asp-controller="Vestiging" asp-action="Create" class="btn btn-geel">Vestiging Toevoegen</a>
         </form>
-    }
+    </div>
 </div>

@@ -59,5 +59,75 @@ namespace ReserveringSysteem.Database
                 return await context.Vestiging.ToListAsync();
             }
         }
+
+        /// <summary>
+        /// Retrieve the <see cref="VestigingsModel"/> with the provided <see cref="int"/> ID
+        /// </summary>
+        public async Task<VestigingsModel> GetVestiging(int id)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                return await context.Vestiging.Where(x => x.ID == id)
+                    .Include(e => e.Reservering)
+                    .FirstOrDefaultAsync();
+            }
+        }
+
+        /// <summary>
+        /// Add a <see cref="VestigingsModel"/> to the database
+        /// </summary>
+        public async Task AddVestiging(VestigingsModel model)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                await context.AddAsync(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Add a <see cref="ReserveringsModel"/> to the database
+        /// </summary>
+        public async Task AddReservering(ReserveringsModel model)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                await context.AddAsync(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Checks if there is a reservation on the specified datetime and table
+        /// </summary>
+        public bool HasReservationOnDateAndTable(DateTime date, int tafel)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                var reservationsOnTable = context.Reservering.Where(x => x.Tafel == tafel);
+                foreach (var reservation in reservationsOnTable)
+                {
+                    if (reservation.Tijd == date)
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the <see cref="VestigingsModel"/> at the max capacity
+        /// </summary>
+        public bool HasMaxReservations(VestigingsModel model, ReserveringsModel reserveringModel)
+        {
+            var maxPersonen = 0;
+            foreach (var reservering in model.Reservering)
+                maxPersonen += reservering.AantalPersonen;
+
+            // Also add the new reservation data
+            maxPersonen += reserveringModel.AantalPersonen;
+
+            return model.MaxPersonen <= maxPersonen;
+        }
     }
 }

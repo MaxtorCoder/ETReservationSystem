@@ -1,0 +1,39 @@
+﻿@model ReserveringSysteem.Models.VestigingModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<form asp-action="CreateVestiging" method="post">
+    <div class="form-group">
+        <label for="vestiging-naam">Vestiging Naam:</label>
+        <input type="text" id="vestiging-naam" class=form-control placeholder="Bon Temps" asp-for="@Model.Naam">
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="vestiging-tafels">Aantal Tafels:</label>
+            <input type="text" id="vestiging-tafels" class=form-control placeholder="140" asp-for="@Model.MaxTafels">
+        </div>
+        <div class="form-group  col-md-6">
+            <label for="vestiging-max-klant">Max klanten:</label>
+            <input type="text" id="vestiging-max-klant" class=form-control placeholder="140" asp-for="@Model.MaxPersonen">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="vestiging-open-tijd">Openings Tijd:</label>
+        <input type="text" id="vestiging-open-tijd" class=form-control placeholder="11:00" asp-for="@Model.OpeningsTijd">
+        <small id="open-tijd-help" class="form-text text-muted">Alleen invullen per half uur (10:00, 10:30 etc.)</small>
+    </div>
+    <div class="form-group">
+        <label for="vestiging-sluit-tijd">Sluitings Tijd:</label>
+        <input type="text" id="vestiging-sluit-tijd" class=form-control placeholder="23:00" asp-for="@Model.SluitingsTijd">
+        <small id="sluit-tijd-help" class="form-text text-muted">Alleen invullen per half uur (10:00, 10:30 etc.)</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Toevoegen</button>
+</form>
