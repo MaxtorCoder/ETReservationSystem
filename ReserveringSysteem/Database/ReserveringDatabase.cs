@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ReserveringSysteem.Database.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,14 +9,14 @@ namespace ReserveringSysteem.Database
 {
     public class ReserveringDatabase
     {
-        private readonly DbContextOptions<ReserveringContext> shopOptions;
+        private readonly DbContextOptions<ReserveringContext> databaseOptions;
 
         /// <summary>
         /// Create a new instance of <see cref="ReserveringDatabase"/>
         /// </summary>
         public ReserveringDatabase(string connectionString)
         {
-            shopOptions = new DbContextOptionsBuilder<ReserveringContext>()
+            databaseOptions = new DbContextOptionsBuilder<ReserveringContext>()
                 .UseSqlServer(connectionString)
                 .Options;
         }
@@ -26,7 +28,7 @@ namespace ReserveringSysteem.Database
         {
             try
             {
-                await using (var context = new ReserveringContext(shopOptions))
+                await using (var context = new ReserveringContext(databaseOptions))
                 {
                     var migrations = (await context.Database.GetPendingMigrationsAsync()).ToList();
                     if (migrations.Count > 0)
@@ -44,6 +46,17 @@ namespace ReserveringSysteem.Database
             {
                 Console.WriteLine(ex);
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Retrieve all <see cref="VestigingsModel"/>
+        /// </summary>
+        public async Task<List<VestigingsModel>> GetVestigingen()
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                return await context.Vestiging.ToListAsync();
             }
         }
     }

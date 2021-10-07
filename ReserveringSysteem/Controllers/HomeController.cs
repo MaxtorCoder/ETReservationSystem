@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ReserveringSysteem.Database;
 using ReserveringSysteem.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ReserveringSysteem.Controllers
 {
@@ -16,11 +18,27 @@ namespace ReserveringSysteem.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+        {
+            var result = new List<ReserveringModel>();
+            var vestigingen = await DatabaseManager.ReserveringDatabase.GetVestigingen();
+            foreach (var vestiging in vestigingen)
+            {
+                result.Add(new()
+                {
+                    ID = vestiging.ID,
+                    Naam = vestiging.Naam
+                });
+            }
+
+            return View(result);
+        }
+
+        public IActionResult Reserveringen()
         {
             var timeList = new List<string>();
 
-            var openingsTijd = new TimeSpan(17, 00, 00);
+            var openingsTijd = new TimeSpan(11, 00, 00);
             var sluitingsTijd = new TimeSpan(23, 00, 00);
 
             while (openingsTijd <= sluitingsTijd)

@@ -1,45 +1,21 @@
-﻿@model List<string>
+﻿@model List<ReserveringModel>
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="scroll-view">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                @foreach (var time in Model)
+<div class="container">
+    @if (Model.Count == 0) {
+        <p>Nog geen Vestigingen!</p>
+        <a asp-controller="Reservering" asp-action="Index">Vestiging Toevoegen</a>
+    } else {
+        <form asp-action="">
+            <label for="vestiging">Kies Vestiging:</label>
+            <select id="vestiging" name="vestigingList">
+                @foreach (var vestiging in Model)
                 {
-                    <th class="event-header">@time</th>
+                    <option value="vestiging.ID">@vestiging.Naam</option>
                 }
-            </tr>
-        </thead>
-        <tbody>
-            @for (var i = 1; i <= 1; ++i)
-            {
-                <tr>
-                    <td colspan="1">Tafel @i</td>
-
-                    <td class="td-event" colspan="1"></td>
-                    <td class="td-event" colspan="1"><div class="event event-start event-start-half"></div></td>
-                    <td class="td-event" colspan="1"><div class="event"></div></td>
-                    <td class="td-event" colspan="1"><div class="event event-end event-end-half"></div></td>
-                    <td class="td-event" colspan="1"></td>
-                    <td class="td-event" colspan="1"></td>
-                    <td class="td-event" colspan="1"></td>
-                    <td class="td-event" colspan="1"><div class="event event-start"></div></td>
-                    <td class="td-event" colspan="1"><div class="event"></div></td>
-                    <td class="td-event" colspan="1"><div class="event event-end"></div></td>
-                    <td class="td-event" colspan="1"></td>
-                    <td class="td-event" colspan="1"></td>
-                    <td class="td-event" colspan="1"></td>
-
-                    @*@for (var j = 0; j < Model.Count; ++j)
-                    {
-                        <td class="no-events" colspan="1"></td>
-                    }*@
-                </tr>
-            }
-        </tbody>
-    </table>
- </div>
+            </select>
+        </form>
+    }
+</div>
