@@ -1,6 +1,6 @@
-﻿namespace ReserveringSysteem.Database.Models
+﻿namespace ReserveringSysteem.Models
 {
-    public class BedrijfsModel
+    public class BedrijfModel
     {
         public int ID { get; set; }
         public string Naam { get; set; }
@@ -10,7 +10,5 @@
         public string BTWNummer { get; set; }
         public string KVKNummer { get; set; }
         public string TelefoonNummer { get; set; }
-
-        public ReserveringsModel Reservering { get; set; }
     }
 }

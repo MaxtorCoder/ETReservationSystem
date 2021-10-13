@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Bedrijven";
+
+    var bedrijfList = (List<BedrijfsModel>)ViewData["Bedrijven"];
+}
+
+<div class="background">
+    <div class="d-flex justify-content-center">
+        <a asp-action="Index" asp-controller="Home" class="btn btn-roze btn-index-reservering">Terug naar vestiging selectie</a>
+        <a asp-action="CreateBedrijf" class="btn btn-roze btn-index-reservering">Bedrijf Toevoegen</a>
+    </div>
+    <hr />
+
+    <div class="scrollview">
+        @foreach (var bedrijf in bedrijfList)
+        {
+            <div class="card" style="width:31rem;">
+                <div class="card-body">
+                    <h5>Naam: @bedrijf.Naam</h5>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col col-card">
+                                <h6 class="card-subtitle mb-2 text-muted">@bedrijf.Adress @bedrijf.PostCode</h6>
+                            </div>
+                            <div class="col col-card">
+                                <h6 class="card-subtitle mb-2 text-muted">@bedrijf.Afdeling</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-card">
+                                <h6 class="card-subtitle mb-2 text-muted">KVK: @bedrijf.KVKNummer</h6>
+                            </div>
+                            <div class="col col-card">
+                                <h6 class="card-subtitle mb-2 text-muted">BTW: @bedrijf.BTWNummer</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-card">
+                                <h6 class="card-subtitle mb-2 text-muted">Telefoon Nummer: @bedrijf.TelefoonNummer</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <a asp-action="RemoveBedrijf" asp-route-id="@bedrijf.ID" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                    <a asp-action="EditBedrijf" asp-route-id="@bedrijf.ID" class="btn btn-roze"><i class="fas fa-pencil-alt"></i></a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

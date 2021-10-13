@@ -11,18 +11,24 @@ namespace ReserveringSysteem.Controllers
     {
         public async Task<IActionResult> Index(int id)
         {
-            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(id);
-            if (vestiging == null)
-                return RedirectToAction("Index", "Home");
+            if (id == 0)
+                ViewData["Vestigingen"] = await DatabaseManager.ReserveringDatabase.GetAllVestigingen();
+            else
+            {
+                var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(id);
+                if (vestiging == null)
+                    return RedirectToAction("Index", "Home");
 
-            ViewData["Vestiging"] = vestiging;
+                ViewData["Vestiging"] = vestiging;
+            }
 
             return View();
         }
 
+        [HttpGet("/create")]
         public IActionResult Create() => View();
 
-        [HttpPost]
+        [HttpPost("/api/create-vestiging")]
         public async Task<IActionResult> CreateVestiging(VestigingModel model)
         {
             if (!ModelState.IsValid)
@@ -64,23 +70,16 @@ namespace ReserveringSysteem.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet("reservering/toevoegen")]
-        public async Task<IActionResult> CreateReservering(int? id)
+        [HttpGet("/create-reservering")]
+        public async Task<IActionResult> CreateReservering()
         {
-            if (id == null)
-                return NotFound();
-
-            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(id ?? 0);
-            if (vestiging == null)
-                return RedirectToAction("Index", "Home");
-
-            ViewData["VestigingID"] = id;
             ViewData["Bedrijven"] = await DatabaseManager.ReserveringDatabase.GetAllBedrijven();
+            ViewData["Vestigingen"] = await DatabaseManager.ReserveringDatabase.GetAllVestigingen();
 
             return View();
         }
 
-        [HttpPost("/api/reservering/toevoegen")]
+        [HttpPost("/api/create-reservering")]
         public async Task<IActionResult> CreateReserveringAPI(ReserveringModel model)
         {
             if (!ModelState.IsValid)
@@ -119,9 +118,15 @@ namespace ReserveringSysteem.Controllers
             // Add the time to the date
             datum = datum.Add(tijd);
 
-            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(int.Parse(model.VestigingID));
+            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(model.VestigingID);
             if (vestiging == null)
                 return RedirectToAction("Index", "Home");
+
+            if (model.BedrijfID == 0)
+                ViewData["Error"] += "Geen bedrijf geselecteerd! ";
+
+            if (await DatabaseManager.ReserveringDatabase.GetBedrijf(model.BedrijfID) == null)
+                ViewData["Error"] += "Bedrijf bestaat niet (dev error)! ";
 
             var reservering = new ReserveringsModel()
             {
@@ -131,6 +136,7 @@ namespace ReserveringSysteem.Controllers
                 AantalPersonen      = aantalPersonen,
                 Tafel               = tafel,
                 Tijd                = datum,
+                BedrijfID           = model.BedrijfID,
             };
 
             if (vestiging.OpeningsTijd > tijd || vestiging.SluitingsTijd < tijd)
@@ -143,19 +149,17 @@ namespace ReserveringSysteem.Controllers
                 ViewData["Error"] += $"Er is al een afspraak gepland op {datum} bij tafel {tafel}";
 
             if (ViewData["Error"] != null)
-            {
-                ViewData["VestigingID"] = model.VestigingID;
                 return View("CreateReservering");
-            }
 
             await DatabaseManager.ReserveringDatabase.AddReservering(reservering);
 
             return RedirectToAction("Index", new { id = vestiging.ID });
         }
 
+        [HttpGet("/remove-reservering")]
         public async Task<IActionResult> RemoveReservering(int? vestigingID, int? reserveringID)
         {
-            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(vestigingID ?? 0); ;
+            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(vestigingID ?? 0);
             if (vestiging == null)
                 return RedirectToAction("Index", new { id = vestigingID ?? 0 });
 
@@ -169,6 +173,119 @@ namespace ReserveringSysteem.Controllers
             await DatabaseManager.ReserveringDatabase.RemoveReservering(reservering);
 
             return RedirectToAction("Index", new { id = vestiging.ID });
+        }
+
+        [HttpGet("/bedrijven")]
+        public async Task<IActionResult> ViewBedrijven()
+        {
+            ViewData["Bedrijven"] = await DatabaseManager.ReserveringDatabase.GetAllBedrijven();
+
+            return View();
+        }
+
+        [HttpGet("/create-bedrijf")]
+        public IActionResult CreateBedrijf() => View();
+
+        [HttpPost("/api/create-bedrijf")]
+        public async Task<IActionResult> CreateBedrijfAPI(BedrijfModel model)
+        {
+            if (!ModelState.IsValid)
+                ViewData["Error"] += "Er is een error! :( Contacteer de developer! ";
+
+            if (string.IsNullOrWhiteSpace(model.Naam))
+                ViewData["Error"] += "Naam van bedrijf is leeg! ";
+
+            if (string.IsNullOrWhiteSpace(model.Adress))
+                ViewData["Error"] += "Address is leeg! ";
+
+            if (string.IsNullOrWhiteSpace(model.PostCode))
+                ViewData["Error"] += "Post Code is leeg! ";
+
+            if (string.IsNullOrWhiteSpace(model.Afdeling))
+                ViewData["Error"] += "Afdeling is leeg! ";
+
+            if (string.IsNullOrWhiteSpace(model.BTWNummer))
+                ViewData["Error"] += "BTW-Nummer is leeg! ";
+
+            if (string.IsNullOrWhiteSpace(model.KVKNummer))
+                ViewData["Error"] += "KVK-Nummer is leeg! ";
+
+            if (await DatabaseManager.ReserveringDatabase.KvkNummerExists(model.KVKNummer))
+                ViewData["Error"] += "KVK-Nummer bestaat al! ";
+
+            if (string.IsNullOrWhiteSpace(model.TelefoonNummer))
+                ViewData["Error"] += "Telefoon-Nummer is leeg! ";
+
+            if (ViewData["Error"] != null)
+                return View("Create");
+
+            var bedrijf = new BedrijfsModel
+            {
+                Naam            = model.Naam,
+                Adress          = model.Adress,
+                PostCode        = model.PostCode,
+                Afdeling        = model.Afdeling,
+                BTWNummer       = model.BTWNummer,
+                KVKNummer       = model.KVKNummer,
+                TelefoonNummer  = model.TelefoonNummer,
+            };
+
+            await DatabaseManager.ReserveringDatabase.AddBedrijf(bedrijf);
+
+            return RedirectToAction("ViewBedrijven");
+        }
+
+        [HttpGet("/remove-bedrijf")]
+        public async Task<IActionResult> RemoveBedrijf(int? id)
+        {
+            var bedrijf = await DatabaseManager.ReserveringDatabase.GetBedrijf(id ?? 0);
+            if (bedrijf == null)
+                return RedirectToAction("ViewBedrijven");
+
+            await DatabaseManager.ReserveringDatabase.RemoveBedrijf(bedrijf);
+
+            return RedirectToAction("ViewBedrijven");
+        }
+
+        [HttpGet("/edit-bedrijf")]
+        public async Task<IActionResult> EditBedrijf(int? id)
+        {
+            if (id == null)
+                return RedirectToAction("ViewBedrijven");
+
+            var bedrijf = await DatabaseManager.ReserveringDatabase.GetBedrijf(id ?? 0);
+            if (bedrijf == null)
+                return RedirectToAction("ViewBedrijven");
+
+            ViewData["Bedrijf"] = bedrijf;
+
+            return View();
+        }
+
+        [HttpPost("/api/edit-bedrijf")]
+        public async Task<IActionResult> EditBedrijfAPI(BedrijfModel model)
+        {
+            if (!ModelState.IsValid)
+                ViewData["Error"] += "Er is een error! :( Contacteer de developer! ";
+
+            if (ViewData["Error"] != null)
+                return View("Create");
+
+            var bedrijf = new BedrijfsModel
+            {
+                ID              = model.ID,
+                Naam            = model.Naam,
+                Adress          = model.Adress,
+                PostCode        = model.PostCode,
+                Afdeling        = model.Afdeling,
+                BTWNummer       = model.BTWNummer,
+                KVKNummer       = model.KVKNummer,
+                TelefoonNummer  = model.TelefoonNummer,
+            };
+
+            await DatabaseManager.ReserveringDatabase.UpdateBedrijf(bedrijf);
+
+            return RedirectToAction("ViewBedrijven");
         }
     }
 }

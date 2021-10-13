@@ -1,0 +1,55 @@
+﻿@model BedrijfModel
+@{
+    ViewData["Title"] = "Bedrijf Aanpassen";
+
+    var bedrijf = (BedrijfsModel)ViewData["Bedrijf"];
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<div class="d-flex justify-content-center align-items-center min-vh-80">
+    <div class="background">
+        <form asp-action="EditBedrijfAPI" method="POST">
+            <input type="hidden" asp-for="ID" value="@bedrijf.ID">
+
+            <div class="form-group">
+                <label for="naam">Naam:</label>
+                <input type="text" id="naam" class="form-control" placeholder="Etos" asp-for="Naam" value="@bedrijf.Naam">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="adress">Address:</label>
+                    <input type="text" id="adress" class="form-control" placeholder="Straatnaam 10" asp-for="Adress" value="@bedrijf.Adress">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="postcode">Postcode:</label>
+                    <input type="text" id="postcode" class="form-control" placeholder="1234AB" asp-for="PostCode" value="@bedrijf.PostCode">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="afdeling">Afdeling:</label>
+                    <input type="text" id="afdeling" class="form-control" placeholder="Afdeling 2" asp-for="Afdeling" value="@bedrijf.Afdeling">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="telefoon-nummer">Telefoon-Nummer:</label>
+                    <input type="text" id="telefoon-nummer" class="form-control" placeholder="061234567890" asp-for="TelefoonNummer" value="@bedrijf.TelefoonNummer">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="btw-nummer">BTW-Nummer:</label>
+                    <input type="text" id="btw-nummer" class="form-control" placeholder="NL123456789B01" asp-for="BTWNummer" value="@bedrijf.BTWNummer">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="kvk-nummer">KVK-Nummer:</label>
+                    <input type="text" id="kvk-nummer" class="form-control" placeholder="12345678" asp-for="KVKNummer" value="@bedrijf.KVKNummer">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Aanpassen</button>
+        </form>
+    </div>
+</div>

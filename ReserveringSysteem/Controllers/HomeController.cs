@@ -18,18 +18,24 @@ namespace ReserveringSysteem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewData["VestigingList"] = await DatabaseManager.ReserveringDatabase.GetVestigingen();
+            ViewData["VestigingList"] = await DatabaseManager.ReserveringDatabase.GetAllVestigingen();
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SelectVestiging(SelectVestigingModel model)
         {
-            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(model.ID);
-            if (vestiging == null)
-                return View("Index");
+            var id = 0;
+            if (model.ID != 0)
+            {
+                var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(model.ID);
+                if (vestiging == null)
+                    return View("Index");
 
-            return RedirectToAction("Index", "Vestiging", new { id = model.ID });
+                id = model.ID;
+            }
+
+            return RedirectToAction("Index", "Vestiging", new { id = id });
         }
 
         public IActionResult Privacy()

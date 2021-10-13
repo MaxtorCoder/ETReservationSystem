@@ -2,23 +2,28 @@
 @{
     ViewData["Title"] = "Home Page";
 
-    var vestigingList = (List<ReserveringSysteem.Database.Models.VestigingsModel>)ViewData["VestigingList"];
+    var vestigingList = (List<VestigingsModel>)ViewData["VestigingList"];
 }
 
-<div class="d-flex justify-content-center">
-    <div>
-        <h4>Vestigingen:</h4>
+<div class="d-flex justify-content-center align-items-center min-vh-80">
+    <div class="background">
+        <h4>Restaurant Vestigingen:</h4>
         <hr />
 
         <form asp-action="SelectVestiging" method="POST">
             <div class="form-group">
-                <label for="vestiging">Kies Vestiging:</label>
-                <select class="form-control" id="vestiging" asp-for="ID" asp-items="@(new SelectList(vestigingList, "ID", "Naam"))">
-                    <option value="0">...</option>
+                <label for="vestiging">Kies Restaurant Vestiging:</label>
+                <select class="form-control" id="vestiging" asp-for="ID">
+                    <option value="0">Alle Reserveringen...</option>
+                    @foreach (var vestiging in vestigingList)
+                    {
+                        <option value="@vestiging.ID">@vestiging.Naam</option>
+                    }
                 </select>
             </div>
             <button type="submit" class="btn btn-roze">Selecteer Vestiging</button>
             <a asp-controller="Vestiging" asp-action="Create" class="btn btn-geel">Vestiging Toevoegen</a>
+            <a asp-controller="Vestiging" asp-action="CreateBedrijf" class="btn btn-roze">Bedrijf Toevoegen</a>
         </form>
     </div>
 </div>

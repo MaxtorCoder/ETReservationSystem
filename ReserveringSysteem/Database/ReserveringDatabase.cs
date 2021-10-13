@@ -52,11 +52,13 @@ namespace ReserveringSysteem.Database
         /// <summary>
         /// Retrieve all <see cref="VestigingsModel"/>
         /// </summary>
-        public async Task<List<VestigingsModel>> GetVestigingen()
+        public async Task<List<VestigingsModel>> GetAllVestigingen()
         {
             using (var context = new ReserveringContext(databaseOptions))
             {
-                return await context.Vestiging.ToListAsync();
+                return await context.Vestiging
+                    .Include(e => e.Reservering)
+                    .ToListAsync();
             }
         }
 
@@ -92,7 +94,7 @@ namespace ReserveringSysteem.Database
         {
             using (var context = new ReserveringContext(databaseOptions))
             {
-                return await context.Reservering.Where(x => x.ID == id)
+                return await context.Reservering.Where(x => x.ReserveringID == id)
                     .Include(e => e.Vestiging)
                     .FirstOrDefaultAsync();
             }
@@ -163,6 +165,70 @@ namespace ReserveringSysteem.Database
             using (var context = new ReserveringContext(databaseOptions))
             {
                 return await context.Bedrijf.ToListAsync();
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a <see cref="BedrijfsModel"/> instance with the provided ID
+        /// </summary>
+        public async Task<BedrijfsModel> GetBedrijf(int id)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                return await context.Bedrijf.FirstOrDefaultAsync(x => x.ID == id);
+            }
+        }
+
+        /// <summary>
+        /// Adds a <see cref="BedrijfsModel"/> instance to the database.
+        /// </summary>
+        public async Task AddBedrijf(BedrijfsModel model)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                await context.AddAsync(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Removes a <see cref="BedrijfsModel"/> instance from the database.
+        /// Also removes all reservations with that BedrijfID
+        /// </summary>
+        public async Task RemoveBedrijf(BedrijfsModel model)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                // Retrieve all reservations with that BedrijfID
+                var reservations = context.Reservering.Where(x => x.BedrijfID == model.ID);
+                context.RemoveRange(reservations);
+
+                context.Remove(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Updates a <see cref="BedrijfsModel"/> instance
+        /// </summary>
+        public async Task UpdateBedrijf(BedrijfsModel model)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                context.Update(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the KVK-Nummer already exists
+        /// </summary>
+        public async Task<bool> KvkNummerExists(string kvkNummer)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                var list = context.Bedrijf.Where(x => x.KVKNummer == kvkNummer);
+                return await list.AnyAsync();
             }
         }
     }

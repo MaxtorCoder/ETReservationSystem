@@ -30,6 +30,10 @@ namespace ReserveringSysteem.Database
                     .HasColumnType("varchar")
                     .HasMaxLength(255);
 
+                entity.Property(e => e.PostCode)
+                    .HasColumnType("varchar")
+                    .HasMaxLength(255);
+
                 entity.Property(e => e.Afdeling)
                    .HasColumnType("varchar")
                    .HasMaxLength(255);
@@ -39,6 +43,10 @@ namespace ReserveringSysteem.Database
                     .HasMaxLength(255);
 
                 entity.Property(e => e.KVKNummer)
+                    .HasColumnType("varchar")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.TelefoonNummer)
                     .HasColumnType("varchar")
                     .HasMaxLength(255);
             });
