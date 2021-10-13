@@ -10,10 +10,10 @@ namespace ReserveringSysteem.Database.Models
         public int AantalPersonen { get; set; }
         public string NaamReserverende { get; set; }
         public string TelefoonNummer { get; set; }
-        /*public int BedrijfID { get; set; }  //< Linked to BedrijfsModel*/
+        public int BedrijfID { get; set; }  //< Linked to BedrijfsModel
         public DateTime Tijd { get; set; }
 
-        /*public BedrijfsModel Bedrijf { get; set; }*/
+        public BedrijfsModel Bedrijf { get; set; }
         public VestigingsModel Vestiging { get; set; }
     }
 }

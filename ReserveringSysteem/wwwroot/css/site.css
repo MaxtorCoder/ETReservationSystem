@@ -77,10 +77,16 @@ body {
 .scroll-view {
     overflow: auto;
     height: 700px;
+    display: flex;
 }
 
 .col-card {
     padding-left: 0px !important;
+}
+
+.card {
+    height: 175px;
+    margin-left: 15px;
 }
 
 /* Button Styles

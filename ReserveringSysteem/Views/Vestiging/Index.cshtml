@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Reserveringen";
 
-    var vestiging = (ReserveringSysteem.Database.Models.VestigingsModel)ViewData["Vestiging"];
+    var vestiging = (VestigingsModel)ViewData["Vestiging"];
 }
 
 <div class="form-group col-md-6">
@@ -12,7 +12,7 @@
 <div class="scroll-view">
     @foreach (var reservering in vestiging.Reservering)
     {
-        <div class="card" style="width: 25rem;">
+        <div class="card" style="width: 50rem;">
             <div class="card-body">
                 <h5>Naam: @reservering.NaamReserverende</h5>
                 <div class="container">
@@ -30,6 +30,7 @@
                         </div>
                     </div>
                 </div>
+                <a asp-action="RemoveReservering" asp-route-vestigingID="@vestiging.ID" asp-route-reserveringID="@reservering.ReserveringID" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
             </div>
         </div>
     }

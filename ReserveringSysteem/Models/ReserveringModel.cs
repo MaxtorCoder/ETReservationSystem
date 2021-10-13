@@ -9,5 +9,6 @@
         public string Tafel { get; set; }
         public string Datum { get; set; }
         public string Tijd { get; set; }
+        public int BedrijfID { get; set; }
     }
 }

@@ -86,6 +86,19 @@ namespace ReserveringSysteem.Database
         }
 
         /// <summary>
+        /// Retrieve a <see cref="ReserveringsModel"/> instance with the provided ID
+        /// </summary>
+        public async Task<ReserveringsModel> GetReservering(int id)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                return await context.Reservering.Where(x => x.ID == id)
+                    .Include(e => e.Vestiging)
+                    .FirstOrDefaultAsync();
+            }
+        }
+
+        /// <summary>
         /// Add a <see cref="ReserveringsModel"/> to the database
         /// </summary>
         public async Task AddReservering(ReserveringsModel model)
@@ -93,6 +106,18 @@ namespace ReserveringSysteem.Database
             using (var context = new ReserveringContext(databaseOptions))
             {
                 await context.AddAsync(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Remove a <see cref="ReserveringsModel"/> instance from the <see cref="ReserveringContext"/>
+        /// </summary>
+        public async Task RemoveReservering(ReserveringsModel model)
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                context.Remove(model);
                 await context.SaveChangesAsync();
             }
         }
@@ -128,6 +153,17 @@ namespace ReserveringSysteem.Database
             maxPersonen += reserveringModel.AantalPersonen;
 
             return model.MaxPersonen <= maxPersonen;
+        }
+
+        /// <summary>
+        /// Retrieves all <see cref="BedrijfsModel"/> instances.
+        /// </summary>
+        public async Task<List<BedrijfsModel>> GetAllBedrijven()
+        {
+            using (var context = new ReserveringContext(databaseOptions))
+            {
+                return await context.Bedrijf.ToListAsync();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@
     ViewData["Title"] = "Reservering Toevoegen";
 
     var vestigingID = ViewData["VestigingID"];
+    var bedrijfList = (List<BedrijfsModel>)ViewData["Bedrijven"];
 }
 
 @if (ViewData["Error"] != null)
@@ -43,6 +44,12 @@
             <label for="tijd">Tijd:</label>
             <input type="time" class="form-control" id="tijd" asp-for="Tijd">
         </div>
+    </div>
+    <div class="form-group">
+        <label for="bedrijf">Bedrijf:</label>
+        <select class="form-control" id="bedrijf" asp-for="BedrijfID" asp-items="@(new SelectList(bedrijfList, "ID", "Naam"))">
+            <option value="0">...</option>
+        </select>
     </div>
     <button type="submit" class="btn btn-geel">Reservering Toevoegen</button>
 </form>

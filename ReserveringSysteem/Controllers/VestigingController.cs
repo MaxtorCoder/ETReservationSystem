@@ -75,6 +75,7 @@ namespace ReserveringSysteem.Controllers
                 return RedirectToAction("Index", "Home");
 
             ViewData["VestigingID"] = id;
+            ViewData["Bedrijven"] = await DatabaseManager.ReserveringDatabase.GetAllBedrijven();
 
             return View();
         }
@@ -148,6 +149,24 @@ namespace ReserveringSysteem.Controllers
             }
 
             await DatabaseManager.ReserveringDatabase.AddReservering(reservering);
+
+            return RedirectToAction("Index", new { id = vestiging.ID });
+        }
+
+        public async Task<IActionResult> RemoveReservering(int? vestigingID, int? reserveringID)
+        {
+            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(vestigingID ?? 0); ;
+            if (vestiging == null)
+                return RedirectToAction("Index", new { id = vestigingID ?? 0 });
+
+            var reservering = await DatabaseManager.ReserveringDatabase.GetReservering(reserveringID ?? 0);
+            if (reservering == null)
+                return RedirectToAction("Index", new { id = vestigingID ?? 0 });
+
+            if (reservering.ID != vestiging.ID)
+                return RedirectToAction("Index", new { id = vestigingID ?? 0 });
+
+            await DatabaseManager.ReserveringDatabase.RemoveReservering(reservering);
 
             return RedirectToAction("Index", new { id = vestiging.ID });
         }
