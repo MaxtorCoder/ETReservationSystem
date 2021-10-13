@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Reserveringen";
+
+    var vestiging = (VestigingsModel)ViewData["Vestiging"];
+}
+
+<div class="form-group col-md-6">
+    <a asp-action="Index" asp-controller="Home" class="btn btn-roze">Terug naar vestiging selectie</a>
+    <a asp-action="CreateReservering" asp-route-id="@vestiging.ID" class="btn btn-roze">Reservering Toevoegen</a>
+</div>
+
+<div class="scroll-view">
+    @foreach (var reservering in vestiging.Reservering)
+    {
+        <div class="card" style="width: 50rem;">
+            <div class="card-body">
+                <h5>Naam: @reservering.NaamReserverende</h5>
+                <div class="container">
+                    <div class="row">
+                        <div class="col col-card">
+                            <h6 class="card-subtitle mb-2 text-muted">Tafel: @reservering.Tafel</h6>
+                        </div>
+                        <div class="col col-card">
+                            <h6 class="card-subtitle mb-2 text-muted">Datum: @reservering.Tijd</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-card">
+                            <h6 class="card-subtitle mb-2 text-muted">Aantal Personen: @reservering.AantalPersonen</h6>
+                        </div>
+                    </div>
+                </div>
+                <a asp-action="RemoveReservering" asp-route-vestigingID="@vestiging.ID" asp-route-reserveringID="@reservering.ReserveringID" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+            </div>
+        </div>
+    }
+</div>

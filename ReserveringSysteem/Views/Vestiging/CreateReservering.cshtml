@@ -1,0 +1,55 @@
+﻿@model ReserveringModel
+@{
+    ViewData["Title"] = "Reservering Toevoegen";
+
+    var vestigingID = ViewData["VestigingID"];
+    var bedrijfList = (List<BedrijfsModel>)ViewData["Bedrijven"];
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<form asp-action="CreateReserveringAPI" method="POST">
+    <input type="hidden" asp-for="VestigingID" value="@vestigingID" />
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="naam">Naam:</label>
+            <input type="text" class="form-control" id="naam" asp-for="NaamReserverende" />
+        </div>
+        <div class="form-group col-md-6">
+            <label for="telefoonnummer">Telefoon Nummer:</label>
+            <input type="tel" class="form-control" id="telefoonnummer" asp-for="TelefoonNummer" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="personen">Personen:</label>
+            <input type="text" class="form-control" id="personen" asp-for="AantalPersonen" />
+        </div>
+        <div class="form-group col-md-6">
+            <label for="tafel">Tafel:</label>
+            <input type="text" class="form-control" id="tafel" asp-for="Tafel" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="datum">Datum:</label>
+            <input type="date" class="form-control" id="datum" asp-for="Datum">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="tijd">Tijd:</label>
+            <input type="time" class="form-control" id="tijd" asp-for="Tijd">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="bedrijf">Bedrijf:</label>
+        <select class="form-control" id="bedrijf" asp-for="BedrijfID" asp-items="@(new SelectList(bedrijfList, "ID", "Naam"))">
+            <option value="0">...</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-geel">Reservering Toevoegen</button>
+</form>

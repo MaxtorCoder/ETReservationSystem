@@ -30,6 +30,10 @@ namespace ReserveringSysteem.Database
                     .HasColumnType("varchar")
                     .HasMaxLength(255);
 
+                entity.Property(e => e.Afdeling)
+                   .HasColumnType("varchar")
+                   .HasMaxLength(255);
+
                 entity.Property(e => e.BTWNummer)
                     .HasColumnType("varchar")
                     .HasMaxLength(255);
@@ -43,7 +47,7 @@ namespace ReserveringSysteem.Database
             {
                 entity.ToTable("reserveringen");
 
-                entity.HasKey(e => new { e.ID, e.ReserveringID })
+                entity.HasKey(e => new { e.ReserveringID })
                     .HasName("PK_Reserveringen");
 
                 entity.Property(e => e.NaamReserverende)
@@ -58,15 +62,15 @@ namespace ReserveringSysteem.Database
                     .HasColumnType("varchar")
                     .HasMaxLength(255);
 
-                entity.HasOne(e => e.Bedrijf)
-                    .WithOne(d => d.Reservering)
-                    .HasForeignKey<ReserveringsModel>(e => e.BedrijfID)
-                    .HasConstraintName("FK__reservering_bedrijf_id__bedrijf_id");
-
                 entity.HasOne(e => e.Vestiging)
                     .WithMany(d => d.Reservering)
                     .HasForeignKey(e => e.ID)
                     .HasConstraintName("FK__reservering_id__vestiging_id");
+
+                entity.HasOne(e => e.Bedrijf)
+                    .WithOne(d => d.Reservering)
+                    .HasForeignKey<ReserveringsModel>(e => e.BedrijfID)
+                    .HasConstraintName("FK__reservering_bedrijf_id__bedrijf_id");
             });
 
             builder.Entity<VestigingsModel>(entity =>

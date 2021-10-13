@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ReserveringSysteem.Database;
 using ReserveringSysteem.Models;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ReserveringSysteem.Controllers
 {
@@ -15,26 +16,20 @@ namespace ReserveringSysteem.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var timeList = new List<string>
-            {
-                "08:00",
-                "08:30",
-                "09:00",
-                "09:30",
-                "10:00",
-                "10:30",
-                "11:00",
-                "11:30",
-                "12:00",
-                "12:30",
-                "13:00",
-                "13:30",
-                "14:00"
-            };
+            ViewData["VestigingList"] = await DatabaseManager.ReserveringDatabase.GetVestigingen();
+            return View();
+        }
 
-            return View(timeList);
+        [HttpPost]
+        public async Task<IActionResult> SelectVestiging(SelectVestigingModel model)
+        {
+            var vestiging = await DatabaseManager.ReserveringDatabase.GetVestiging(model.ID);
+            if (vestiging == null)
+                return View("Index");
+
+            return RedirectToAction("Index", "Vestiging", new { id = model.ID });
         }
 
         public IActionResult Privacy()
