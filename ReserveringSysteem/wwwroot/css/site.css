@@ -91,7 +91,6 @@ body {
 ------------------------------------------------- */
 .scroll-view {
     overflow: auto;
-    height: 700px;
     display: flex;
 }
 
