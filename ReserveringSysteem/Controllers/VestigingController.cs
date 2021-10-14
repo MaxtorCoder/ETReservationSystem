@@ -149,7 +149,12 @@ namespace ReserveringSysteem.Controllers
                 ViewData["Error"] += $"Er is al een afspraak gepland op {datum} bij tafel {tafel}";
 
             if (ViewData["Error"] != null)
+            {
+                ViewData["Bedrijven"] = await DatabaseManager.ReserveringDatabase.GetAllBedrijven();
+                ViewData["Vestigingen"] = await DatabaseManager.ReserveringDatabase.GetAllVestigingen();
+
                 return View("CreateReservering");
+            }
 
             await DatabaseManager.ReserveringDatabase.AddReservering(reservering);
 

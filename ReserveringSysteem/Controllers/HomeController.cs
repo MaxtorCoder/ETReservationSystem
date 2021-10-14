@@ -35,7 +35,7 @@ namespace ReserveringSysteem.Controllers
                 id = model.ID;
             }
 
-            return RedirectToAction("Index", "Vestiging", new { id = id });
+            return RedirectToAction("Index", "Vestiging", new { id });
         }
 
         public IActionResult Privacy()

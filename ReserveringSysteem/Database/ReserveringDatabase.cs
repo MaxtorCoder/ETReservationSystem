@@ -227,8 +227,7 @@ namespace ReserveringSysteem.Database
         {
             using (var context = new ReserveringContext(databaseOptions))
             {
-                var list = context.Bedrijf.Where(x => x.KVKNummer == kvkNummer);
-                return await list.AnyAsync();
+                return await context.Bedrijf.AnyAsync(x => x.KVKNummer == kvkNummer);
             }
         }
     }
